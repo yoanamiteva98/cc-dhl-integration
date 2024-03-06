@@ -1,20 +1,44 @@
 <template>
     <div>
       <h2 v-if="sectionName" class="section-title">{{ sectionName }}</h2>
-      <p>Enter the details of your package.<br>
-        Note: All measurements are in kilograms and dimensions are in the metric system.
-      </p>
       <hr v-if="sectionName">
       <div class="input-fields-wrapper">
         <div class="column-left">
-          <InputComponent v-model="packageData.weight" :input-type="'number'" :input-name="'Weight (in kg)'" />
-          <InputComponent v-model="packageData.length" :input-type="'number'" :input-name="'Length (in meters)'" />
-          <InputComponent v-model="packageData.packageDescription" :input-name="'Package Description'" />
+          <InputComponent :inputValue="packageData.itemName" 
+                @update-value="updatePackage('itemName', $event)" 
+               :input-name="'Item name (displayed in the waybill)'" :is-required="true"/>
+                <div v-if="errors.find(e => e.includes('itemName'))" class="error-text"> Item name is required. </div>
+
+          <InputComponent :inputValue="packageData.weight" 
+                @update-value="updatePackage('weight', $event)" 
+                :input-type="'number'" :input-name="'Weight (in kg)'" :is-required="true"/>
+                <div v-if="errors.find(e => e.includes('weight'))" class="error-text"> Weight is required. </div>
+
+          <InputComponent :inputValue="packageData.labelDescription" 
+                @update-value="updatePackage('labelDescription', $event)" 
+                :input-name="'Label Description'" :is-required="true"/>
+                <div v-if="errors.find(e => e.includes('labelDescription'))" class="error-text"> Label Description is required. </div>
+
+          <InputComponent :inputValue="packageData.additionalDeliveryMessage" 
+                @update-value="updatePackage('additionalDeliveryMessage', $event)" 
+               :input-name="'Additional note (e.g. fragile)'"/>
         </div>
         <div class="column-right">
-          <InputComponent v-model="packageData.width" :input-type="'number'" :input-name="'Width (in meters)'" />
-          <InputComponent v-model="packageData.height" :input-type="'number'" :input-name="'Height (in meters)'" />
-          <InputComponent v-model="packageData.labelDescription" :input-name="'Label Description'" />
+          <InputComponent :inputValue="packageData.price" 
+                @update-value="updatePackage('price', $event)" 
+                :input-type="'number'" :input-name="'Price'" :is-required="true"/>
+                <div v-if="errors.find(e => e.includes('price'))" class="error-text"> Price is required. </div>
+
+          <InputComponent :inputValue="packageData.packageDescription" 
+                @update-value="updatePackage('packageDescription', $event)" 
+                :input-name="'Package Description'" :is-required="true" />
+                <div v-if="errors.find(e => e.includes('packageDescription'))" class="error-text"> Package Description is required. </div>
+
+          <InputComponent :inputValue="packageData.additionalInformation" 
+                @update-value="updatePackage('additionalInformation', $event)" 
+               :input-name="'Additional product description'"/>
+
+          
         </div>
       </div>
     </div>
@@ -33,9 +57,19 @@
         type: String,
         required: false,
       },
-      packageData: { // Define the prop name
+      packageData: {
         type: Object,
         required: true,
+      },
+      errors: {
+        type: Array,
+        required: true,
+        default: () => [],
+      },
+    },
+    methods: {
+      updatePackage(key, value) {
+        this.$emit('update:packageData', { ...this.packageData, [key]: value });
       },
     },
   };
