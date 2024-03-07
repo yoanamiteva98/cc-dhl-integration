@@ -3,7 +3,7 @@
 ## About Set Up
 
 1. Clone the Repository:
-   ``` git clone <repository_url>```
+   ``` git clone [<repository_url>](https://github.com/yoanamiteva98/cc-dhl-integration.git)```
 
 2. Navigate to the Project Directory:
     ```cd <project_directory>```
